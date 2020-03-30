@@ -7,6 +7,27 @@ on:
     branches: [ master ]
 
 jobs:
+  report:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Install dependecies
+        run: npm install
+      - name: Generate report
+        run: npm run lint:report
+        continue-on-error: true
+      - name: Annotate report
+        uses: ataylorme/eslint-annotate-action@1.0.4
+        with:
+          repo-token: "${{ secrets.GITHUB_TOKEN }}"
+          report-json: "eslint-report.json"
+      - name: Archive report
+        uses: actions/upload-artifact@v1
+        with:
+          name: eslint-report.json
+          path: eslint-report.json
   check:
     runs-on: ubuntu-latest
     
@@ -38,15 +59,17 @@ jobs:
      needs: build
      
      steps:
+       - name: Checkout
+         uses: actions/checkout@v2
        - name: Download build
          uses: actions/download-artifact@v1
          with:
            name: build
        - name: Init firebase
-         run: echo "{{ secrets.FIREBASERC }}" > .firebaserc
+         run: echo "${{ secrets.FIREBASERC }}" > .firebaserc
        - name: Deploy to firebase
          uses: w9jds/firebase-action@master
          with:
-           args: deploy
+           args: deploy --project ${{secrets.FIREBASE_PROJECT}}
          env:
            FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }} 
