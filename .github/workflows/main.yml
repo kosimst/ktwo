@@ -19,16 +19,27 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+    - name: Checkout
+      uses: actions/checkout@v2
     - name: Install dependencies
       run: npm install
-    - name: Init firebase
-      run: echo "{{ secrets.FIREBASERC }}" > .firebaserc
     - name: Build app
       run: npm run build
+    - name: Archive build
+      uses: actions/upload-artifact@v1
+      with:
+        name: build
+        path: build
   deploy:
      runs-on: ubuntu-latest
      
      steps:
+       - name: Download build
+         uses: actions/download-artifact@v1
+         with:
+           name: build
+       - name: Init firebase
+         run: echo "{{ secrets.FIREBASERC }}" > .firebaserc
        - name: Deploy to firebase
          uses: w9jds/firebase-action@master
          with:
