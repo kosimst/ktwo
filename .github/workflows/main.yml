@@ -23,12 +23,15 @@ jobs:
         with:
           repo-token: "${{ secrets.GITHUB_TOKEN }}"
           report-json: "eslint-report.json"
+      - name: Archive report
+        uses: actions/upload-artifact@v1
+        with:
+          name: eslint-report.json
+          path: eslint-report.json
   check:
     runs-on: ubuntu-latest
     
     steps:
-      - name: Print rc
-        run: echo "${{ secrets.FIREBASERC }}"
       - name: Checkout
         uses: actions/checkout@v2
       - name: Install dependecies
@@ -64,11 +67,9 @@ jobs:
            name: build
        - name: Init firebase
          run: echo "${{ secrets.FIREBASERC }}" > .firebaserc
-       - name: Print rc file
-         run: cat ./.firebaserc
        - name: Deploy to firebase
          uses: w9jds/firebase-action@master
          with:
-           args: deploy
+           args: deploy --project ${{secrets.FIREBASE_PROJECT}}
          env:
            FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }} 
