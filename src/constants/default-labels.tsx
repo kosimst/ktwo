@@ -8,33 +8,33 @@ const defaultLabels: DefaultLabel[] = [
   {
     name: 'Messaging',
     id: 'social',
-    icon: 'LocalPostOffice'
+    icon: 'LocalPostOffice',
   },
   {
     name: 'Shops',
     id: 'shops',
-    icon: 'Storefront'
+    icon: 'Storefront',
   },
   {
     name: 'Code',
     id: 'code',
-    icon: 'Code'
+    icon: 'Code',
   },
   {
     name: 'Office',
     id: 'office',
-    icon: 'AttachFile'
+    icon: 'AttachFile',
   },
   {
     name: 'Music',
     id: 'music',
-    icon: 'Audiotrack'
+    icon: 'Audiotrack',
   },
   {
     name: 'Work',
     id: 'work',
-    icon: 'Work'
-  }
+    icon: 'Work',
+  },
 ]
 
 export default defaultLabels

@@ -7,7 +7,7 @@ import {
   makeStyles,
   Theme,
   Grid,
-  Tooltip
+  Tooltip,
 } from '@material-ui/core'
 import CloudDoneIcon from '@material-ui/icons/CloudDone'
 import HttpsRoundedIcon from '@material-ui/icons/HttpsRounded'
@@ -21,28 +21,28 @@ const useStyles = makeStyles((theme: Theme) => ({
   card: {
     padding,
     position: 'relative',
-    marginBottom: 16
+    marginBottom: 16,
   },
   token: {
     textAlign: 'center',
     userSelect: 'all',
     '&::selection': {
       backgroundColor: theme.palette.primary.main,
-      color: 'white'
-    }
+      color: 'white',
+    },
   },
   icons: {
     position: 'absolute',
     right: padding,
-    bottom: padding / 2
+    bottom: padding / 2,
   },
   icon: {
     opacity: 0.25,
-    marginLeft: 8
+    marginLeft: 8,
   },
   favToggle: {
-    cursor: 'pointer'
-  }
+    cursor: 'pointer',
+  },
 }))
 
 const TokenCard: React.FC<Account> = ({
@@ -52,7 +52,7 @@ const TokenCard: React.FC<Account> = ({
   sync,
   description,
   user,
-  labels
+  labels,
 }) => {
   const token = useToken(secret)
 
@@ -68,14 +68,8 @@ const TokenCard: React.FC<Account> = ({
         </Grid>
         <Grid item xs={6}>
           <Typography variant="h4" className={styles.token}>
-            {token
-              ?.split('')
-              .slice(0, 3)
-              .join('')}{' '}
-            {token
-              ?.split('')
-              .slice(3, 6)
-              .join('')}
+            {token?.split('').slice(0, 3).join('')}{' '}
+            {token?.split('').slice(3, 6).join('')}
           </Typography>
         </Grid>
       </Grid>

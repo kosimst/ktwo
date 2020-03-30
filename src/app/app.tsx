@@ -2,6 +2,7 @@ import AppBar from '@material-ui/core/AppBar'
 import CssBaseline from '@material-ui/core/CssBaseline'
 import Divider from '@material-ui/core/Divider'
 import Drawer from '@material-ui/core/Drawer'
+import Fab from '@material-ui/core/Fab'
 import List from '@material-ui/core/List'
 import ListItem from '@material-ui/core/ListItem'
 import ListItemIcon from '@material-ui/core/ListItemIcon'
@@ -9,55 +10,54 @@ import ListItemText from '@material-ui/core/ListItemText'
 import {
   createStyles,
   makeStyles,
+  MuiThemeProvider,
   Theme,
-  MuiThemeProvider
 } from '@material-ui/core/styles'
 import Toolbar from '@material-ui/core/Toolbar'
 import Typography from '@material-ui/core/Typography'
+import AddRoundedIcon from '@material-ui/icons/AddRounded'
 import LabelOutlinedIcon from '@material-ui/icons/LabelOutlined'
+import CogRoundedIcon from '@material-ui/icons/SettingsRounded'
 import StarBorderRoundedIcon from '@material-ui/icons/StarBorderRounded'
 import VpnKeyRoundedIcon from '@material-ui/icons/VpnKeyRounded'
 import React, { lazy, Suspense, useState } from 'react'
-import defaultLabels from '../constants/default-labels'
-import Fab from '@material-ui/core/Fab'
-import AddRoundedIcon from '@material-ui/icons/AddRounded'
-import CogRoundedIcon from '@material-ui/icons/SettingsRounded'
 import TokenCard from '../components/token-card'
-import useSavedAccounts from '../hooks/saved-accounts'
 import theme from '../config/theme'
+import defaultLabels from '../constants/default-labels'
+import useSavedAccounts from '../hooks/saved-accounts'
 
 const drawerWidth = 240
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
-      display: 'flex'
+      display: 'flex',
     },
     appBar: {
-      zIndex: theme.zIndex.drawer + 1
+      zIndex: theme.zIndex.drawer + 1,
     },
     drawer: {
       width: drawerWidth,
-      flexShrink: 0
+      flexShrink: 0,
     },
     drawerPaper: {
-      width: drawerWidth
+      width: drawerWidth,
     },
     content: {
       flexGrow: 1,
-      padding: theme.spacing(3)
+      padding: theme.spacing(3),
     },
     toolbar: theme.mixins.toolbar,
     fab: {
       position: 'absolute',
       right: theme.spacing(3),
-      bottom: theme.spacing(3)
+      bottom: theme.spacing(3),
     },
     settings: {
       position: 'absolute',
-      bottom: 0
-    }
-  })
+      bottom: 0,
+    },
+  }),
 )
 
 export default function ClippedDrawer() {
@@ -85,7 +85,7 @@ export default function ClippedDrawer() {
           className={classes.drawer}
           variant="permanent"
           classes={{
-            paper: classes.drawerPaper
+            paper: classes.drawerPaper,
           }}
         >
           <div className={classes.toolbar} />
@@ -128,7 +128,7 @@ export default function ClippedDrawer() {
             )
           })}
           {userLabels.length ? <Divider /> : null}
-          {userLabels.map(label => (
+          {userLabels.map((label) => (
             <ListItem button key={label} onClick={setSelectedLabelTo(label)}>
               <ListItemIcon>
                 <LabelOutlinedIcon />
@@ -166,10 +166,10 @@ export default function ClippedDrawer() {
           {savedAccounts
             .filter(
               ({ labels }) =>
-                selectedLabel === 'all' || labels.includes(selectedLabel)
+                selectedLabel === 'all' || labels.includes(selectedLabel),
             )
-            .map(props => (
-              <TokenCard {...props} />
+            .map((props) => (
+              <TokenCard {...props} key={props.secret} />
             ))}
         </main>
       </div>

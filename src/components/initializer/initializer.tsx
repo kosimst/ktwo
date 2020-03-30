@@ -1,3 +1,7 @@
 import React from 'react'
 
-const Initializer = () => {}
+const Initializer = () => {
+  return <span />
+}
+
+export default Initializer

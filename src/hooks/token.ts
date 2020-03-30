@@ -11,7 +11,7 @@ const useToken = (secret: string) => {
         algorithm: 'SHA1',
         digits: 6,
         period: 30,
-        secret: OTPAuth.Secret.fromB32(secret.replace(/\s/g, ''))
+        secret: OTPAuth.Secret.fromB32(secret.replace(/\s/g, '')),
       })
     else return null
   }, [secret])
