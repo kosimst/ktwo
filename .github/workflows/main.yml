@@ -27,6 +27,8 @@ jobs:
     runs-on: ubuntu-latest
     
     steps:
+      - name: Print rc
+        run: echo "${{ secrets.FIREBASERC }}"
       - name: Checkout
         uses: actions/checkout@v2
       - name: Install dependecies
@@ -62,6 +64,8 @@ jobs:
            name: build
        - name: Init firebase
          run: echo "${{ secrets.FIREBASERC }}" > .firebaserc
+       - name: Print rc file
+         run: cat ./.firebaserc
        - name: Deploy to firebase
          uses: w9jds/firebase-action@master
          with:
