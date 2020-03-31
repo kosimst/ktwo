@@ -1,3 +1,13 @@
+import {
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  Portal,
+  TextField,
+  Tooltip,
+} from '@material-ui/core'
 import AppBar from '@material-ui/core/AppBar'
 import CssBaseline from '@material-ui/core/CssBaseline'
 import Divider from '@material-ui/core/Divider'
@@ -65,114 +75,161 @@ export default function ClippedDrawer() {
 
   const userLabels = ['Phone']
 
-  const [savedAccounts] = useSavedAccounts()
+  const [savedAccounts, setSavedAccount] = useSavedAccounts()
 
   const [selectedLabel, setSelectedLabel] = useState<string>('all')
   const setSelectedLabelTo = (id: string) => () => setSelectedLabel(id)
 
+  const [dialogOpened, setDialogOpened] = useState<boolean>(false)
+
   return (
     <MuiThemeProvider theme={theme}>
-      <div className={classes.root}>
-        <CssBaseline />
-        <AppBar position="fixed" className={classes.appBar}>
-          <Toolbar>
-            <Typography variant="h6" noWrap>
-              My Vault
-            </Typography>
-          </Toolbar>
-        </AppBar>
-        <Drawer
-          className={classes.drawer}
-          variant="permanent"
-          classes={{
-            paper: classes.drawerPaper,
-          }}
-        >
-          <div className={classes.toolbar} />
-          <List>
-            <ListItem button onClick={setSelectedLabelTo('all')}>
-              <ListItemIcon>
-                <VpnKeyRoundedIcon />
-              </ListItemIcon>
-              <ListItemText
-                primary="All Tokens"
-                secondary={`${Math.floor(Math.random() * 6)} Tokens`}
-              />
-            </ListItem>
-            <ListItem button onClick={setSelectedLabelTo('fav')}>
-              <ListItemIcon>
-                <StarBorderRoundedIcon />
-              </ListItemIcon>
-              <ListItemText
-                primary="Favourites"
-                secondary={`${Math.floor(Math.random() * 6)} Tokens`}
-              />
-            </ListItem>
-          </List>
-          <Divider />
-          {defaultLabels.map(({ icon, id, name }) => {
-            const Icon = lazy(() => import(`@material-ui/icons/${icon}Rounded`))
-
-            return (
-              <ListItem button key={id} onClick={setSelectedLabelTo(id)}>
+      <Portal>
+        <div className={classes.root}>
+          <CssBaseline />
+          <AppBar position="fixed" className={classes.appBar}>
+            <Toolbar>
+              <Typography variant="h6" noWrap>
+                My Vault
+              </Typography>
+            </Toolbar>
+          </AppBar>
+          <Drawer
+            className={classes.drawer}
+            variant="permanent"
+            classes={{
+              paper: classes.drawerPaper,
+            }}
+          >
+            <div className={classes.toolbar} />
+            <List>
+              <ListItem button onClick={setSelectedLabelTo('all')}>
                 <ListItemIcon>
-                  <Suspense fallback={<LabelOutlinedIcon />}>
-                    <Icon />
-                  </Suspense>
+                  <VpnKeyRoundedIcon />
                 </ListItemIcon>
                 <ListItemText
-                  primary={name}
+                  primary="All Tokens"
+                  secondary={`${Math.floor(Math.random() * 6)} Tokens`}
+                />
+              </ListItem>
+              <ListItem button onClick={setSelectedLabelTo('fav')}>
+                <ListItemIcon>
+                  <StarBorderRoundedIcon />
+                </ListItemIcon>
+                <ListItemText
+                  primary="Favourites"
+                  secondary={`${Math.floor(Math.random() * 6)} Tokens`}
+                />
+              </ListItem>
+            </List>
+            <Divider />
+            {defaultLabels.map(({ icon, id, name }) => {
+              const Icon = lazy(() =>
+                import(`@material-ui/icons/${icon}Rounded`),
+              )
+
+              return (
+                <ListItem button key={id} onClick={setSelectedLabelTo(id)}>
+                  <ListItemIcon>
+                    <Suspense fallback={<LabelOutlinedIcon />}>
+                      <Icon />
+                    </Suspense>
+                  </ListItemIcon>
+                  <ListItemText
+                    primary={name}
+                    secondary={`${Math.floor(Math.random() * 6 + 1)} Tokens`}
+                  />
+                </ListItem>
+              )
+            })}
+            {userLabels.length ? <Divider /> : null}
+            {userLabels.map((label) => (
+              <ListItem button key={label} onClick={setSelectedLabelTo(label)}>
+                <ListItemIcon>
+                  <LabelOutlinedIcon />
+                </ListItemIcon>
+                <ListItemText
+                  primary={label}
                   secondary={`${Math.floor(Math.random() * 6 + 1)} Tokens`}
                 />
               </ListItem>
-            )
-          })}
-          {userLabels.length ? <Divider /> : null}
-          {userLabels.map((label) => (
-            <ListItem button key={label} onClick={setSelectedLabelTo(label)}>
+            ))}
+            <Divider />
+            <ListItem button>
               <ListItemIcon>
-                <LabelOutlinedIcon />
+                <AddRoundedIcon />
               </ListItemIcon>
               <ListItemText
-                primary={label}
-                secondary={`${Math.floor(Math.random() * 6 + 1)} Tokens`}
+                primary="Add new label"
+                secondary="Create custom label"
               />
             </ListItem>
-          ))}
-          <Divider />
-          <ListItem button>
-            <ListItemIcon>
-              <AddRoundedIcon />
-            </ListItemIcon>
-            <ListItemText
-              primary="Add new label"
-              secondary="Create custom label"
+
+            <ListItem button className={classes.settings}>
+              <ListItemIcon>
+                <CogRoundedIcon />
+              </ListItemIcon>
+              <ListItemText
+                primary="Settings"
+                secondary="Customize your vault"
+              />
+            </ListItem>
+          </Drawer>
+          <main className={classes.content}>
+            <div className={classes.toolbar} />
+            <Tooltip title="Add new account">
+              <Fab
+                color="primary"
+                className={classes.fab}
+                onClick={() => setDialogOpened(true)}
+              >
+                <AddRoundedIcon />
+              </Fab>
+            </Tooltip>
+
+            {savedAccounts
+              .filter(
+                ({ labels }) =>
+                  selectedLabel === 'all' || labels.includes(selectedLabel),
+              )
+              .map((props) => (
+                <TokenCard {...props} key={props.secret} />
+              ))}
+          </main>
+        </div>
+
+        <Dialog open={dialogOpened} onClose={() => setDialogOpened(false)}>
+          <DialogTitle>Add new account</DialogTitle>
+          <DialogContent>
+            <TextField label="Name" placeholder="Token name" required />
+            <br />
+            <TextField label="User" placeholder="User name or email" />
+            <br />
+            <TextField
+              label="Description"
+              placeholder="Anything you want to add"
             />
-          </ListItem>
-
-          <ListItem button className={classes.settings}>
-            <ListItemIcon>
-              <CogRoundedIcon />
-            </ListItemIcon>
-            <ListItemText primary="Settings" secondary="Customize your vault" />
-          </ListItem>
-        </Drawer>
-        <main className={classes.content}>
-          <div className={classes.toolbar} />
-          <Fab color="primary" className={classes.fab}>
-            <AddRoundedIcon />
-          </Fab>
-
-          {savedAccounts
-            .filter(
-              ({ labels }) =>
-                selectedLabel === 'all' || labels.includes(selectedLabel),
-            )
-            .map((props) => (
-              <TokenCard {...props} key={props.secret} />
-            ))}
-        </main>
-      </div>
+            <br />
+            <TextField
+              label="Secret"
+              placeholder="Secret from your app"
+              required
+            />
+          </DialogContent>
+          <DialogActions>
+            <Button color="primary" onClick={() => setDialogOpened(false)}>
+              Cancel
+            </Button>
+            <Button
+              color="primary"
+              variant="contained"
+              onClick={() => setDialogOpened(false)}
+            >
+              Add
+            </Button>
+          </DialogActions>
+        </Dialog>
+      </Portal>
     </MuiThemeProvider>
   )
 }
