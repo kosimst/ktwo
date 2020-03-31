@@ -1,13 +1,4 @@
-import {
-  Button,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-  Portal,
-  TextField,
-  Tooltip,
-} from '@material-ui/core'
+import { Portal, Tooltip } from '@material-ui/core'
 import AppBar from '@material-ui/core/AppBar'
 import CssBaseline from '@material-ui/core/CssBaseline'
 import Divider from '@material-ui/core/Divider'
@@ -31,7 +22,8 @@ import CogRoundedIcon from '@material-ui/icons/SettingsRounded'
 import StarBorderRoundedIcon from '@material-ui/icons/StarBorderRounded'
 import VpnKeyRoundedIcon from '@material-ui/icons/VpnKeyRounded'
 import React, { lazy, Suspense, useState } from 'react'
-import TokenCard from '../components/token-card'
+import AccountDialog from '../components/account-dialog'
+import TokenCardList from '../components/token-card-list'
 import theme from '../config/theme'
 import defaultLabels from '../constants/default-labels'
 import useSavedAccounts from '../hooks/saved-accounts'
@@ -187,48 +179,15 @@ export default function ClippedDrawer() {
               </Fab>
             </Tooltip>
 
-            {savedAccounts
-              .filter(
-                ({ labels }) =>
-                  selectedLabel === 'all' || labels.includes(selectedLabel),
-              )
-              .map((props) => (
-                <TokenCard {...props} key={props.secret} />
-              ))}
+            <TokenCardList tokens={savedAccounts} label={selectedLabel} />
           </main>
-        </div>
 
-        <Dialog open={dialogOpened} onClose={() => setDialogOpened(false)}>
-          <DialogTitle>Add new account</DialogTitle>
-          <DialogContent>
-            <TextField label="Name" placeholder="Token name" required />
-            <br />
-            <TextField label="User" placeholder="User name or email" />
-            <br />
-            <TextField
-              label="Description"
-              placeholder="Anything you want to add"
-            />
-            <br />
-            <TextField
-              label="Secret"
-              placeholder="Secret from your app"
-              required
-            />
-          </DialogContent>
-          <DialogActions>
-            <Button color="primary" onClick={() => setDialogOpened(false)}>
-              Cancel
-            </Button>
-            <Button
-              color="primary"
-              variant="contained"
-              onClick={() => setDialogOpened(false)}
-            >
-              Add
-            </Button>
-          </DialogActions>
-        </Dialog>
+          <AccountDialog
+            open={dialogOpened}
+            onClose={() => setDialogOpened(false)}
+            onSave={() => setDialogOpened(false)}
+          />
+        </div>
       </Portal>
     </MuiThemeProvider>
   )
